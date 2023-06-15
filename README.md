@@ -15,6 +15,8 @@ This component can be used to help application developers guide users to set the
 ```svelte
 <script>
   import WebIdCheck from '@hexagon6/svelte-solid-webid-check'
+
+  let validOIDCEndpoint = ''
 </script>
 
 <WebIdCheck
@@ -23,6 +25,8 @@ This component can be used to help application developers guide users to set the
     validOIDCEndpoint = oidcEndpoint
   }}>show</WebIdCheck
 >
+
+Your solid webId oidc authentication endpoint is {validOIDCEndpoint}
 ```
 
 For more examples check out this repo and check out histoire with `npm run story:dev` or a sveltekit example with `npm run dev`.
