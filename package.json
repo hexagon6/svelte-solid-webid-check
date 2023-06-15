@@ -30,5 +30,9 @@
   "exports": {
     ".": "./index.mjs"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hexagon6/svelte-solid-webid-check.git"
+  },
   "type": "module"
 }
