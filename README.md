@@ -23,7 +23,7 @@ This component can be used to help application developers guide users to set the
   placeholder={'https://timbl.inrupt.net/profile/card#me'}
   on:valid-oidc-endpoint={({ detail: { oidcEndpoint } }) => {
     validOIDCEndpoint = oidcEndpoint
-  }}>show</WebIdCheck
+  }}><span slot="confirm">show</span></WebIdCheck
 >
 
 Your solid webId oidc authentication endpoint is {validOIDCEndpoint}

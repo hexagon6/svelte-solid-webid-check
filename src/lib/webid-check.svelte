@@ -55,7 +55,8 @@
 </script>
 
 <div class="input-wrapper">
-  <input type="text" bind:value={url} {placeholder} list="pods" />
+  <label for="webid"><slot name="label">Choose your webid:</slot></label>
+  <input id="webid" type="text" bind:value={url} {placeholder} list="pods" />
   {#if loading}<span class="oidc-checkmark spinner">⚙️</span>{/if}
   {#await hasOIDCIssuer then oidc}
     {#if !loading}
@@ -68,7 +69,7 @@
               oidcEndpoint: oidc,
             })
           }}
-          disabled={!validURL}><slot>set</slot></button
+          disabled={!validURL}><slot name="confirm">set</slot></button
         >
       {/if}
     {/if}
@@ -106,5 +107,9 @@
     flex-direction: row;
     align-items: center;
     width: 100%;
+  }
+  .dropdown {
+    position: relative;
+    left: 0;
   }
 </style>
