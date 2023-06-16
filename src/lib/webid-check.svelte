@@ -1,10 +1,11 @@
 <script>
   import { createEventDispatcher } from 'svelte'
+  import { pods } from './pods.mjs'
 
   export let placeholder = 'https://inrupt.net'
   const dispatch = createEventDispatcher()
 
-  const isUrl = (/** @type {string | URL} */ url) => {
+  const isUrl = (/** @type {string} */ url) => {
     try {
       new URL(url)
       return true
@@ -13,9 +14,16 @@
     }
   }
 
+  const prefix = 'https://'
   $: url = ''
-  $: validURL = isUrl(url)
-  $: hasOIDCIssuer = validURL ? checkOIDC(url) : false
+  $: secureUrl =
+    url.length > 8
+      ? url.startsWith(prefix)
+        ? url
+        : `${prefix}${url}`
+      : `${prefix}${url}`
+  $: validURL = isUrl(secureUrl)
+  $: hasOIDCIssuer = validURL ? checkOIDC(secureUrl) : false
   $: loading = false
 
   const checkOIDC = (/** @type {string | URL} */ url) => {
@@ -36,7 +44,7 @@
             return false
           }
           const issuer = new URL(config.issuer)
-          return issuer
+          return issuer.href
         })
         .catch(() => false)
         .finally(() => (loading = false))
@@ -47,7 +55,7 @@
 </script>
 
 <div class="input-wrapper">
-  <input type="text" bind:value={url} {placeholder} />
+  <input type="text" bind:value={url} {placeholder} list="pods" />
   {#if loading}<span class="oidc-checkmark spinner">⚙️</span>{/if}
   {#await hasOIDCIssuer then oidc}
     {#if !loading}
@@ -66,6 +74,13 @@
     {/if}
   {/await}
 </div>
+{#if pods}
+  <datalist class="dropdown" id="pods">
+    {#each pods as pod}
+      <option value={pod} />
+    {/each}
+  </datalist>
+{/if}
 
 <style>
   input {
