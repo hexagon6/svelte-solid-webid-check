@@ -86,8 +86,7 @@
 <style>
   input {
     font-family: monospace;
-    width: auto;
-    min-width: 40em;
+    padding-right: 1.5em;
   }
   .spinner {
     animation: rotate 1.5s linear infinite;
@@ -106,7 +105,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    width: 100%;
   }
   .dropdown {
     position: relative;
