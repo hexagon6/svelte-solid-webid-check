@@ -60,7 +60,11 @@
   {#if loading}<span class="oidc-checkmark spinner">⚙️</span>{/if}
   {#await hasOIDCIssuer then oidc}
     {#if !loading}
-      <span class="oidc-checkmark">{oidc ? '✅' : '❎'}</span>
+      <span
+        class="oidc-checkmark"
+        class:valid-oidc={oidc}
+        class:invalid-oidc={!oidc}
+      />
       {#if oidc}
         <button
           on:click|preventDefault={() => {
@@ -109,5 +113,11 @@
   .dropdown {
     position: relative;
     left: 0;
+  }
+  .valid-oidc::after {
+    content: '✅';
+  }
+  .invalid-oidc::after {
+    content: '❎';
   }
 </style>
