@@ -57,7 +57,6 @@
   "files": [
     "package"
   ],
-  "svelte": "./index.mjs",
   "typesVersions": {
     ">4.0": {
       "webid-check.story.svelte": [
