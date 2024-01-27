@@ -6,8 +6,8 @@
     "story:build": "histoire build",
     "story:preview": "histoire preview",
     "dev": "vite dev",
-    "build": "svelte-kit sync && svelte-package",
-    "prepublishOnly": "echo 'Did you mean to publish `./dist/`, instead of `./`?' && exit 1",
+    "build": "svelte-kit sync && svelte-package -o package",
+    "prepublishOnly": "echo 'Did you mean to publish `./package/`, instead of `./`?' && exit 1",
     "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check .",
@@ -18,7 +18,7 @@
     "@histoire/shared": "^0.17.9",
     "@sveltejs/adapter-auto": "^3.1.1",
     "@sveltejs/kit": "^2.5.0",
-    "@sveltejs/package": "^2.2.6",
+    "@sveltejs/package": "^2.0.0",
     "histoire": "^0.17.9",
     "prettier": "^3.2.4",
     "prettier-plugin-svelte": "^3.1.2",
@@ -29,7 +29,20 @@
   },
   "node": ">=16",
   "exports": {
-    ".": "./index.mjs"
+    "./package.json": "./package.json",
+    ".": "./index.mjs",
+    "./index.mjs": "./package/index.mjs",
+    "./pods.mjs": "./package/pods.mjs",
+    "./webid-check.story.svelte": {
+      "types": "./package/webid-check.story.svelte.d.ts",
+      "svelte": "./package/webid-check.story.svelte",
+      "default": "./package/webid-check.story.svelte"
+    },
+    "./webid-check.svelte": {
+      "types": "./package/webid-check.svelte.d.ts",
+      "svelte": "./package/webid-check.svelte",
+      "default": "./package/webid-check.svelte"
+    }
   },
   "repository": {
     "type": "git",
@@ -38,5 +51,19 @@
   "type": "module",
   "peerDependencies": {
     "svelte": "^4.2.9"
+  },
+  "files": [
+    "package"
+  ],
+  "svelte": "./index.mjs",
+  "typesVersions": {
+    ">4.0": {
+      "webid-check.story.svelte": [
+        "./package/webid-check.story.svelte.d.ts"
+      ],
+      "webid-check.svelte": [
+        "./package/webid-check.svelte.d.ts"
+      ]
+    }
   }
 }
