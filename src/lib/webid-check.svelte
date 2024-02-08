@@ -1,6 +1,7 @@
 <script>
   import { createEventDispatcher } from 'svelte'
   import { pods } from './pods.mjs'
+  import { stopTyping } from './helper.mjs'
   import OIDCheckboxButton from './oidccheckboxbutton.svelte'
 
   export let placeholder = 'https://inrupt.net'
@@ -25,6 +26,8 @@
           url = i?.target?.value || ''
         }
       }}
+      use:stopTyping
+      on:stopTyping={() => (url = inputURL)}
       on:click={() => (url = inputURL)}
       bind:value={inputURL}
       {placeholder}
