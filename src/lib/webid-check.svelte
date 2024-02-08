@@ -1,123 +1,101 @@
 <script>
   import { createEventDispatcher } from 'svelte'
   import { pods } from './pods.mjs'
+  import OIDCheckboxButton from './oidccheckboxbutton.svelte'
 
   export let placeholder = 'https://inrupt.net'
   const dispatch = createEventDispatcher()
 
-  const isUrl = (/** @type {string} */ url) => {
-    try {
-      new URL(url)
-      return true
-    } catch (e) {
-      return false
-    }
-  }
-
-  const prefix = 'https://'
+  $: inputURL = ''
   $: url = ''
-  $: secureUrl =
-    url.length > 8
-      ? url.startsWith(prefix)
-        ? url
-        : `${prefix}${url}`
-      : `${prefix}${url}`
-  $: validURL = isUrl(secureUrl)
-  $: hasOIDCIssuer = validURL ? checkOIDC(secureUrl) : false
   $: loading = false
-
-  const checkOIDC = (/** @type {string | URL} */ url) => {
-    if (!validURL) {
-      return false
-    }
-
-    try {
-      const { protocol, host } = new URL(url)
-      loading = true
-      // FIXME: use AbortController and debounce to prevent too many requests
-      return fetch(`${protocol}//${host}/.well-known/openid-configuration`, {
-        method: 'get',
-      })
-        .then((res) => (res?.ok ? res.json() : false))
-        .then((config) => {
-          if (!config?.issuer) {
-            return false
-          }
-          const issuer = new URL(config.issuer)
-          return issuer.href
-        })
-        .catch(() => false)
-        .finally(() => (loading = false))
-    } catch (e) {
-      return false
-    }
-  }
 </script>
 
-<div class="input-wrapper">
+<form>
   <label for="webid"><slot name="label">Choose your webid:</slot></label>
-  <input id="webid" type="text" bind:value={url} {placeholder} list="pods" />
-  {#if loading}<span class="oidc-checkmark spinner">⚙️</span>{/if}
-  {#await hasOIDCIssuer then oidc}
-    {#if !loading}
-      <span
-        class="oidc-checkmark"
-        class:valid-oidc={oidc}
-        class:invalid-oidc={!oidc}
-      />
-      {#if oidc}
-        <button
-          on:click|preventDefault={() => {
-            dispatch('valid-oidc-endpoint', {
-              userInput: url,
-              oidcEndpoint: oidc,
-            })
-          }}
-          disabled={!validURL}><slot name="confirm">set</slot></button
-        >
-      {/if}
+  <div class="centered contains-indicator">
+    <input
+      id="webid"
+      type="text"
+      class="full-size"
+      on:input={(/** @type InputEvent */ i) => {
+        console.log(i)
+        if (i.inputType == 'insertReplacementText') {
+          loading = true
+          url = i?.target?.value || ''
+        }
+      }}
+      on:click={() => (url = inputURL)}
+      bind:value={inputURL}
+      {placeholder}
+      list="pods"
+    />
+    <OIDCheckboxButton
+      {url}
+      on:valid-oidc-endpoint={(e) => {
+        console.log(e)
+        dispatch(e.type, e.detail)
+      }}
+    />
+    {#if pods}
+      <datalist class="dropdown" id="pods">
+        {#each pods as pod}
+          <option value={pod} />
+        {/each}
+      </datalist>
     {/if}
-  {/await}
-</div>
-{#if pods}
-  <datalist class="dropdown" id="pods">
-    {#each pods as pod}
-      <option value={pod} />
-    {/each}
-  </datalist>
-{/if}
+  </div>
+</form>
 
 <style>
-  input {
-    font-family: monospace;
-    padding-right: 1.5em;
+  * {
+    box-sizing: border-box;
   }
-  .spinner {
-    animation: rotate 1.5s linear infinite;
+
+  form {
+    display: grid;
+    gap: 1em;
   }
-  @keyframes rotate {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  .oidc-checkmark {
-    position: relative;
-    left: -1.2em;
-    user-select: none;
-  }
-  .input-wrapper {
+
+  .centered {
     display: flex;
-    flex-direction: row;
+    justify-content: center;
     align-items: center;
   }
+
+  .full-size {
+    width: 100%;
+    height: 100%;
+  }
+
+  input {
+    font-family: monospace;
+    border: none;
+    flex-grow: 2;
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  .contains-indicator {
+    border-color: inherit;
+    border: 1px solid lightgray;
+  }
+
+  .contains-indicator:focus-within {
+    outline: 1px solid lightblue;
+  }
+
   .dropdown {
     position: relative;
+    line-height: 2em;
     left: 0;
   }
-  .valid-oidc::after {
-    content: '✅';
-  }
-  .invalid-oidc::after {
-    content: '❎';
+
+  @media screen and (min-width: 448px) {
+    form {
+      grid-template-columns: 1fr 2fr 1fr;
+    }
   }
 </style>
