@@ -39,7 +39,8 @@
         console.log(e)
         dispatch(e.type, e.detail)
       }}
-    />
+      ><slot name="confirm">set</slot>
+    </OIDCheckboxButton>
     {#if pods}
       <datalist class="dropdown" id="pods">
         {#each pods as pod}

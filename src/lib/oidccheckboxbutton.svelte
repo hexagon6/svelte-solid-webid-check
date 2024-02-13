@@ -78,7 +78,7 @@
         class:invalid-oidc={!oidc}
       />
     {/if}
-    <slot name="confirm">set</slot>
+    <slot>set</slot>
   </button>
 {/await}
 
