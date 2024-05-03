@@ -1,6 +1,6 @@
 {
   "name": "@hexagon6/svelte-solid-webid-check",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "scripts": {
     "story:dev": "histoire dev",
     "story:build": "histoire build",
