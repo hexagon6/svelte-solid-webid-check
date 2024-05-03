@@ -7,22 +7,30 @@
 
   const isUrl = (/** @type {string} */ url) => {
     try {
-      new URL(url)
+      const u = new URL(url)
+      if (u.host === 'http' || u.host === 'https') {
+        return false
+      }
       return true
     } catch (e) {
       return false
     }
   }
 
-  const prefix = 'https://'
+  const securePrefix = 'https://'
+  // if input has no scheme always use https://
   $: secureUrl =
     url.length > 8
-      ? url.startsWith(prefix)
+      ? url.startsWith(securePrefix)
         ? url
-        : `${prefix}${url}`
-      : `${prefix}${url}`
-  $: validURL = isUrl(secureUrl)
-  $: hasOIDCIssuer = validURL ? checkOIDC(secureUrl) : false
+        : `${securePrefix}${url}`
+      : `${securePrefix}${url}`
+  $: insecureUrl = url.startsWith('http://') ? url : ''
+  $: validURL = isUrl(secureUrl) || isUrl(insecureUrl)
+  // allow http:// prefixed URL as input only if explicitly defined
+  $: hasOIDCIssuer = validURL
+    ? checkOIDC(insecureUrl ? insecureUrl : secureUrl)
+    : false
   $: loading = false
 
   const checkOIDC = (/** @type {string | URL} */ url) => {
