@@ -10,6 +10,12 @@ This works by reading the contents of /.well-known/openid-configuration as defin
 
 This component can be used to help application developers guide users to set their webId url, for a quick validation on input. It should make it easier to set up a webID-based login for solid applications with svelte / sveltekit.
 
+## Demo
+
+Try [https://webid.fet.li/webid-check](https://webid.fet.li/webid-check/).
+
+> Note: check the console if you want to see the result after clicking on "set".
+
 ## Example usage
 
 ```svelte
