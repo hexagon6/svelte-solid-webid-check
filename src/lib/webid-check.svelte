@@ -1,25 +1,27 @@
+<svelte:options runes={true} />
+
 <script>
-  import { createEventDispatcher } from 'svelte'
   import { pods } from './pods.mjs'
   import { stopTyping } from './helper.mjs'
   import OIDCheckboxButton from './oidccheckboxbutton.svelte'
 
-  export let placeholder = 'https://inrupt.net'
-  const dispatch = createEventDispatcher()
+  let {confirm, label, placeholder = 'https://inrupt.net', validOIDCEndpoint = () => {}} = $props()
 
-  $: inputURL = ''
-  $: url = ''
-  $: loading = false
+  let inputURL = $state('')
+  let url = $state('')
+  let loading = $state(false)
 </script>
 
 <form>
-  <label for="webid"><slot name="label">Choose your webid:</slot></label>
+  <label for="webid">
+    {@render label?.()}
+    {#if !label}Choose your webid:{/if}</label>
   <div class="centered contains-indicator">
     <input
       id="webid"
       type="text"
       class="full-size"
-      on:input={(/** @type InputEvent */ i) => {
+      oninput={(/** @type InputEvent */ i) => {
         console.log(i)
         if (i.inputType == 'insertReplacementText') {
           loading = true
@@ -27,8 +29,8 @@
         }
       }}
       use:stopTyping
-      on:stopTyping={() => (url = inputURL)}
-      on:click={() => (url = inputURL)}
+      onstopTyping={() => (url = inputURL)}
+      onclick={() => (url = inputURL)}
       bind:value={inputURL}
       {placeholder}
       list="pods"
@@ -37,9 +39,9 @@
       {url}
       validOidcEndpoint={(e) => {
         console.log(e)
-        dispatch('valid-oidc-endpoint', e)
+        validOIDCEndpoint(e)
       }}
-      ><slot name="confirm">set</slot>
+      >{@render confirm?.()}{#if !confirm}set{/if}
     </OIDCheckboxButton>
     {#if pods}
       <datalist class="dropdown" id="pods">

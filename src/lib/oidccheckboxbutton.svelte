@@ -1,7 +1,7 @@
 <svelte:options runes={true} />
 
 <script>
-  let {confirmation = 'set', url = '', validOidcEndpoint} = $props()
+  let {children , url = '', validOidcEndpoint} = $props()
 
   const isUrl = (/** @type {string} */ url) => {
     try {
@@ -56,14 +56,10 @@
     : false)
 </script>
 
-{#snippet confirm(set = 'set')}
-  {set}
-{/snippet}
-
 {#await hasOIDCIssuer}
   <button class="flex full-size centered" disabled={true}>
     <div class="oidc-checkmark centered spinner">⚙️</div>
-    {@render confirm(confirmation)}
+    {@render children()}
   </button>
 {:then oidc}
   <button
@@ -85,7 +81,7 @@
         class:invalid-oidc={!oidc}
       ></div>
     {/if}
-    {@render confirm(confirmation)}
+    {@render children()}
   </button>
 {/await}
 
