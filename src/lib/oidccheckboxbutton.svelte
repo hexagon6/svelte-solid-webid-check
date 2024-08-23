@@ -1,9 +1,7 @@
+<svelte:options runes={true} />
+
 <script>
-  import { createEventDispatcher } from 'svelte'
-
-  export let url = ''
-
-  const dispatch = createEventDispatcher()
+  let {confirmation = 'set', url = '', validOidcEndpoint} = $props()
 
   const isUrl = (/** @type {string} */ url) => {
     try {
@@ -19,19 +17,12 @@
 
   const securePrefix = 'https://'
   // if input has no scheme always use https://
-  $: secureUrl =
-    url.length > 8
-      ? url.startsWith(securePrefix)
-        ? url
-        : `${securePrefix}${url}`
-      : `${securePrefix}${url}`
-  $: insecureUrl = url.startsWith('http://') ? url : ''
-  $: validURL = isUrl(secureUrl) || isUrl(insecureUrl)
+  let secureUrl = $derived( url.length > 8 ? url.startsWith(securePrefix) ? url : `${securePrefix}${url}` : `${securePrefix}${url}`)
+  let insecureUrl = $derived( url.startsWith('http://') ? url : '')
+  let validURL = $derived(isUrl(secureUrl) || isUrl(insecureUrl))
   // allow http:// prefixed URL as input only if explicitly defined
-  $: hasOIDCIssuer = validURL
-    ? checkOIDC(insecureUrl ? insecureUrl : secureUrl)
-    : false
-  $: loading = false
+
+  let loading = $state(false)
 
   const checkOIDC = (/** @type {string | URL} */ url) => {
     if (!validURL) {
@@ -59,22 +50,30 @@
       return false
     }
   }
+
+  let hasOIDCIssuer = $derived(validURL
+    ? checkOIDC(insecureUrl ? insecureUrl : secureUrl)
+    : false)
 </script>
+
+{#snippet confirm(set = 'set')}
+  {set}
+{/snippet}
 
 {#await hasOIDCIssuer}
   <button class="flex full-size centered" disabled={true}>
     <div class="oidc-checkmark centered spinner">⚙️</div>
-    <slot name="confirm">set</slot>
+    {@render confirm(confirmation)}
   </button>
 {:then oidc}
   <button
     class="flex full-size centered"
-    on:click|preventDefault={() => {
-      dispatch('valid-oidc-endpoint', {
+    onclick={() =>
+      validOidcEndpoint({
         userInput: url,
         oidcEndpoint: oidc,
       })
-    }}
+    }
     disabled={!oidc}
   >
     {#if loading}
@@ -86,7 +85,7 @@
         class:invalid-oidc={!oidc}
       ></div>
     {/if}
-    <slot>set</slot>
+    {@render confirm(confirmation)}
   </button>
 {/await}
 

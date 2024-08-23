@@ -35,9 +35,9 @@
     />
     <OIDCheckboxButton
       {url}
-      on:valid-oidc-endpoint={(e) => {
+      validOidcEndpoint={(e) => {
         console.log(e)
-        dispatch(e.type, e.detail)
+        dispatch('valid-oidc-endpoint', e)
       }}
       ><slot name="confirm">set</slot>
     </OIDCheckboxButton>
