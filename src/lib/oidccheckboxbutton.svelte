@@ -84,7 +84,7 @@
         class="oidc-checkmark centered"
         class:valid-oidc={oidc}
         class:invalid-oidc={!oidc}
-      />
+      ></div>
     {/if}
     <slot>set</slot>
   </button>

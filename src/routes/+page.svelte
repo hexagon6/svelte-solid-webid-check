@@ -7,7 +7,6 @@
 <main>
   <section>
     <h2>WebIdCheck</h2>
-    <form>
       Type in your webId to check whether there is an openid connect endpoint
       available
       <WebIdCheck
@@ -16,7 +15,6 @@
           validOIDCEndpoint = oidcEndpoint
         }}>show</WebIdCheck
       >
-    </form>
 
     {#if validOIDCEndpoint}
       <p>

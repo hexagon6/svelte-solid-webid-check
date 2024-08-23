@@ -44,7 +44,7 @@
     {#if pods}
       <datalist class="dropdown" id="pods">
         {#each pods as pod}
-          <option value={pod} />
+          <option value={pod}></option>
         {/each}
       </datalist>
     {/if}
