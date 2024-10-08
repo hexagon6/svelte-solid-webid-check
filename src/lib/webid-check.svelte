@@ -101,7 +101,7 @@
 
   @media screen and (min-width: 448px) {
     form {
-      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-columns: 1fr auto;
     }
   }
 </style>
