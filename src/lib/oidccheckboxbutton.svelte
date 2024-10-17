@@ -56,7 +56,7 @@
     : false)
 </script>
 
-{#await hasOIDCIssuer}
+{#await Promise.resolve(hasOIDCIssuer)}
   <button class="flex full-size centered" disabled={true}>
     <div class="oidc-checkmark centered spinner">⚙️</div>
     {@render children()}
