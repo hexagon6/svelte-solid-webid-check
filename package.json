@@ -50,7 +50,7 @@
   },
   "type": "module",
   "peerDependencies": {
-    "svelte": "^5.0.0-next.235"
+    "svelte": "^5.0.0-next.269"
   },
   "files": [
     "package"
