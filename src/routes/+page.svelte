@@ -4,29 +4,29 @@
   import WebIdCheck from '$lib/webid-check.svelte'
 
   let validOIDCEndpoint = $state('')
-  const setUrl = ({oidcEndpoint}) => {
+  const setUrl = ({ oidcEndpoint }) => {
     validOIDCEndpoint = oidcEndpoint
   }
 </script>
 
 <main>
   <h2>WebIdCheck Component Example</h2>
-  <span>Type in your webId to check whether there is an openid connect endpoint available</span>
+  <span
+    >Type in your webId to check whether there is an openid connect endpoint
+    available</span
+  >
   {#if validOIDCEndpoint}
-  <section>
+    <section>
       <p>
         The OpenID Connect Endpoint is at <a href={validOIDCEndpoint}
           >{validOIDCEndpoint}</a
         >
       </p>
-  </section>
-    {/if}
+    </section>
+  {/if}
   <h3>Default Component</h3>
   <section>
-
-    <WebIdCheck
-    validOIDCEndpoint={setUrl}>
-  </WebIdCheck>
+    <WebIdCheck validOIDCEndpoint={setUrl}></WebIdCheck>
   </section>
   <h3>Variant with "placeholder", "confirm" and "label"</h3>
   <pre>&lt;WebIdCheck
@@ -38,23 +38,23 @@
 &lt;/WebIdCheck&gt;</pre>
   <section>
     <WebIdCheck
-        placeholder="https://timbl.inrupt.net/profile/card#me"
-        validOIDCEndpoint={setUrl}
-        >
-        {#snippet confirm()}confirm{/snippet}
-        {#snippet label()}label{/snippet}
+      placeholder="https://timbl.inrupt.net/profile/card#me"
+      validOIDCEndpoint={setUrl}
+    >
+      {#snippet confirm()}confirm{/snippet}
+      {#snippet label()}label{/snippet}
     </WebIdCheck>
   </section>
-
-
 </main>
 
 <style>
   * {
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+      'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
 
-  section, pre {
+  section,
+  pre {
     display: flex;
     margin: 2em;
     padding: 1em;

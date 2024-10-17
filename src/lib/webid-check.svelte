@@ -5,7 +5,12 @@
   import { stopTyping } from './helper.mjs'
   import OIDCheckboxButton from './oidccheckboxbutton.svelte'
 
-  let {confirm, label, placeholder = 'https://inrupt.net', validOIDCEndpoint = () => {}} = $props()
+  let {
+    confirm,
+    label,
+    placeholder = 'https://inrupt.net',
+    validOIDCEndpoint = () => {},
+  } = $props()
 
   let inputURL = $state('')
   let url = $state('')
@@ -15,7 +20,8 @@
 <form>
   <label for="webid">
     {@render label?.()}
-    {#if !label}Choose your webid:{/if}</label>
+    {#if !label}Choose your webid:{/if}</label
+  >
   <div class="centered contains-indicator">
     <input
       id="webid"

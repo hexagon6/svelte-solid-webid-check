@@ -1,7 +1,7 @@
 <svelte:options runes={true} />
 
 <script>
-  let {children , url = '', validOidcEndpoint} = $props()
+  let { children, url = '', validOidcEndpoint } = $props()
 
   const isUrl = (/** @type {string} */ url) => {
     try {
@@ -17,8 +17,14 @@
 
   const securePrefix = 'https://'
   // if input has no scheme always use https://
-  let secureUrl = $derived( url.length > 8 ? url.startsWith(securePrefix) ? url : `${securePrefix}${url}` : `${securePrefix}${url}`)
-  let insecureUrl = $derived( url.startsWith('http://') ? url : '')
+  let secureUrl = $derived(
+    url.length > 8
+      ? url.startsWith(securePrefix)
+        ? url
+        : `${securePrefix}${url}`
+      : `${securePrefix}${url}`,
+  )
+  let insecureUrl = $derived(url.startsWith('http://') ? url : '')
   let validURL = $derived(isUrl(secureUrl) || isUrl(insecureUrl))
   // allow http:// prefixed URL as input only if explicitly defined
 
@@ -51,9 +57,9 @@
     }
   }
 
-  let hasOIDCIssuer = $derived(validURL
-    ? checkOIDC(insecureUrl ? insecureUrl : secureUrl)
-    : false)
+  let hasOIDCIssuer = $derived(
+    validURL ? checkOIDC(insecureUrl ? insecureUrl : secureUrl) : false,
+  )
 </script>
 
 {#await Promise.resolve(hasOIDCIssuer)}
@@ -68,8 +74,7 @@
       validOidcEndpoint({
         userInput: url,
         oidcEndpoint: oidc,
-      })
-    }
+      })}
     disabled={!oidc}
   >
     {#if loading}
