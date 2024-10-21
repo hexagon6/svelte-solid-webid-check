@@ -28,7 +28,6 @@
       type="text"
       class="full-size"
       oninput={(/** @type InputEvent */ i) => {
-        console.log(i)
         if (i.inputType == 'insertReplacementText') {
           loading = true
           url = i?.target?.value || ''
@@ -44,7 +43,6 @@
     <OIDCheckboxButton
       {url}
       validOidcEndpoint={(e) => {
-        console.log(e)
         validOIDCEndpoint(e)
       }}
       >{@render confirm?.()}{#if !confirm}set{/if}
