@@ -30,9 +30,10 @@
 
   let loading = $state(false)
 
+  /** @returns {null | Promise<null | string>}*/
   const checkOIDC = (/** @type {string | URL} */ url) => {
     if (!validURL) {
-      return false
+      return null
     }
 
     try {
@@ -42,29 +43,48 @@
       return fetch(`${protocol}//${host}/.well-known/openid-configuration`, {
         method: 'get',
       })
-        .then((res) => (res?.ok ? res.json() : false))
+        .then((res) => (res?.ok ? res.json() : null))
         .then((config) => {
           if (!config?.issuer) {
-            return false
+            return null
           }
           const issuer = new URL(config.issuer)
           return issuer.href
         })
-        .catch(() => false)
+        .catch(() => null)
         .finally(() => (loading = false))
     } catch (e) {
-      return false
+      return null
     }
   }
 
-  let hasOIDCIssuer = $derived(
-    validURL ? checkOIDC(insecureUrl ? insecureUrl : secureUrl) : false,
-  )
+  /** @typedef {null | Promise<null | string>} MaybeURI*/
+  /** @type {MaybeURI} */
+  let hasOIDCIssuer = $state(null)
+  $effect(() => {
+    if (validURL) {
+      hasOIDCIssuer = checkOIDC(insecureUrl ? insecureUrl : secureUrl)
+    } else {
+      hasOIDCIssuer = null
+    }
+  })
 </script>
+
+{#snippet checkmark(/** @type {boolean} */ oidc)}
+  <div
+    class="oidc-checkmark centered"
+    class:valid-oidc={oidc}
+    class:invalid-oidc={!oidc}
+  ></div>
+{/snippet}
+
+{#snippet spinner()}
+  <div class="oidc-checkmark centered spinner">⚙️</div>
+{/snippet}
 
 {#await hasOIDCIssuer}
   <button class="flex full-size centered" disabled={true}>
-    <div class="oidc-checkmark centered spinner">⚙️</div>
+    {@render spinner()}
     {@render children()}
   </button>
 {:then oidc}
@@ -78,15 +98,11 @@
     disabled={!oidc}
   >
     {#if loading}
-      <div class="oidc-checkmark centered spinner">⚙️</div>
+      {@render spinner()}
     {:else}
-      <div
-        class="oidc-checkmark centered"
-        class:valid-oidc={oidc}
-        class:invalid-oidc={!oidc}
-      ></div>
+      {@render checkmark(oidc)}
+      {@render children()}
     {/if}
-    {@render children()}
   </button>
 {/await}
 
